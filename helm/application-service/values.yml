@@ -1,5 +1,5 @@
 image:
-  repository: us-central1-docker.pkg.dev/project-e065e07a-eadd-490c-a26/hackathon/order-service
+  repository: us-central1-docker.pkg.dev/project-e065e07a-eadd-490c-a26/hackathon/application-service
   tag: latest
   pullPolicy: IfNotPresent
 
