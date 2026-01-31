@@ -1,19 +1,35 @@
 resource "google_container_cluster" "gke" {
   name     = "hackathon-gke"
   location = "us-central1"
+
   remove_default_node_pool = true
   initial_node_count       = 1
+
+  # OPTIONAL: enable basic logging & monitoring
+  logging_service    = "logging.googleapis.com/kubernetes"
+  monitoring_service = "monitoring.googleapis.com/kubernetes"
 }
 
 resource "google_container_node_pool" "primary" {
-  cluster = google_container_cluster.gke.name
+  name     = "primary"
+  cluster  = google_container_cluster.gke.name
   location = "us-central1"
+
+  node_count = 2
 
   node_config {
     machine_type    = "e2-medium"
     service_account = var.service_account_email
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
+
+    # 🔥 IMPORTANT: Use HDD to avoid SSD quota issues
+    disk_type    = "pd-standard"
+    disk_size_gb = 50
   }
 
-  node_count = 2
+  # OPTIONAL but recommended
+  management {
+    auto_upgrade = true
+    auto_repair  = true
+  }
 }
