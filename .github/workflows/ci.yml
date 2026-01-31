@@ -1,0 +1,43 @@
+name: CI - Build & Push Images
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+env:
+  PROJECT_ID: your-gcp-project-id
+  REGION: us-central1
+  REPO: hackathon
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 🔐 Authenticate to GCP
+    - name: GCP Auth
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker $REGION-docker.pkg.dev
+
+    # 🧱 Build Java
+    - name: Build Order Service
+      run: mvn clean package -f order-service/pom.xml
+
+    # 🐳 Build & Push Images
+    - name: Build & Push Docker Images
+      run: |
+        docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/order-service:latest ./order-service
+        docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/patient-service:latest ./patient-service
+        docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/application-service:latest ./application-service
+
+        docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/order-service:latest
+        docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/patient-service:latest
+        docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/application-service:latest
