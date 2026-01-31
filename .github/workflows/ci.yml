@@ -18,11 +18,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # 🔐 Authenticate to GCP
-    - name: GCP Auth
+    # # 🔐 Authenticate to GCP
+    # - name: GCP Auth
+    #   uses: google-github-actions/auth@v2
+    #   with:
+    #     credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Authenticate to GCP
       uses: google-github-actions/auth@v2
       with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        workload_identity_provider: "projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
+        service_account: "ghactions-sa@project-e065e07a-eadd-490c-a26.iam.gserviceaccount.com"
+
 
     - name: Configure Docker
       run: gcloud auth configure-docker $REGION-docker.pkg.dev
@@ -41,3 +48,4 @@ jobs:
         docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/order-service:latest
         docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/patient-service:latest
         docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/application-service:latest
+
