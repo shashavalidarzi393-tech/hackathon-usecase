@@ -15,17 +15,18 @@ provider "google" {
 
 module "vpc" {
   source = "../../modules/vpc"
-}
-
-module "iam" {
-  source     = "../../modules/iam"
-  project_id = var.project_id
+  region = var.region       # ✅ REQUIRED
 }
 
 module "gke" {
-  source              = "../../modules/gke"
-  project_id          = var.project_id
-  region              = var.region
-  service_account_email = module.iam.gke_node_sa_email
-  network             = module.vpc.vpc_name
+  source = "../../modules/gke"
+  project_id = var.project_id
+  region     = var.region
+  zone       = var.zone
+  service_account_email = module.iam.gke_sa_email
+}
+
+module "iam" {
+  source = "../../modules/iam"
+  project_id = var.project_id
 }
