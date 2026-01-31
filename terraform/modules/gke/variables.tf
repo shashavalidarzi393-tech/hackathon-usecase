@@ -6,10 +6,11 @@ variable "region" {
   type = string
 }
 
-variable "service_account_email" {
+variable "network" {
   type = string
+  default = "default"
 }
 
-variable "network" {
+variable "service_account_email" {
   type = string
 }
