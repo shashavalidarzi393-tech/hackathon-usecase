@@ -13,20 +13,20 @@ provider "google" {
   zone    = var.zone
 }
 
+module "iam" {
+  source = "../../modules/iam"
+  project_id = var.project_id
+}
+
 module "vpc" {
   source = "../../modules/vpc"
-  region = var.region       # ✅ REQUIRED
+  region = var.region
 }
 
 module "gke" {
   source = "../../modules/gke"
   project_id = var.project_id
   region     = var.region
-  zone       = var.zone
+  network    = "default"   # required
   service_account_email = module.iam.gke_sa_email
-}
-
-module "iam" {
-  source = "../../modules/iam"
-  project_id = var.project_id
 }
