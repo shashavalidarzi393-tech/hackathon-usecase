@@ -2,11 +2,10 @@ resource "google_container_cluster" "gke" {
   name     = "hackathon-gke"
   location = var.region
 
+  network = var.network
+
   remove_default_node_pool = true
   initial_node_count       = 1
-
-  network    = var.network
-  subnetwork = "default"
 
   deletion_protection = false
 }
