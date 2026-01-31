@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  PROJECT_ID: your-gcp-project-id
+  PROJECT_ID: project-e065e07a-eadd-490c-a26
   REGION: us-central1
   REPO: hackathon
 
@@ -48,4 +48,5 @@ jobs:
         docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/order-service:latest
         docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/patient-service:latest
         docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/application-service:latest
+
 
