@@ -1,0 +1,40 @@
+name: Terraform IaC
+
+on:
+  pull_request:
+    paths:
+      - "terraform/**"
+  push:
+    branches: [ main ]
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Init
+      run: terraform init
+      working-directory: terraform/envs/dev
+
+    - name: Terraform Format
+      run: terraform fmt -check -recursive
+      working-directory: terraform
+
+    - name: Terraform Validate
+      run: terraform validate
+      working-directory: terraform/envs/dev
+
+    - name: Terraform Plan
+      if: github.event_name == 'pull_request'
+      run: terraform plan
+      working-directory: terraform/envs/dev
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve
+      working-directory: terraform/envs/dev
