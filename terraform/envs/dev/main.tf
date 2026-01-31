@@ -2,13 +2,14 @@ terraform {
   required_version = ">= 1.5"
 
   backend "gcs" {
-    bucket = "tf-state-hackathon-dev"
-    prefix = "terraform/state/dev"
+    bucket  = "tf-state-hackathon-dev"
+    prefix  = "terraform/state/dev"
   }
 }
 
 provider "google" {
   project = var.project_id
+  region  = var.region
 }
 
 module "iam" {
@@ -22,9 +23,9 @@ module "vpc" {
 }
 
 module "gke" {
-  source = "../../modules/gke"
-  project_id            = var.project_id
-  region                = var.region
-  network               = "default"
-  service_account_email = module.iam.gke_sa_email
+  source                  = "../../modules/gke"
+  project_id              = var.project_id
+  region                  = var.region
+  network                 = module.vpc.vpc_name
+  service_account_email   = module.iam.gke_sa_email
 }
