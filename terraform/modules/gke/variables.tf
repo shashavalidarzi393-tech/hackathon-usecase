@@ -1,16 +1,9 @@
-variable "project_id" {
-  type = string
-}
-
 variable "region" {
-  type = string
-}
-
-variable "network" {
-  type = string
-  default = "default"
+  type        = string
+  description = "GCP region"
 }
 
 variable "service_account_email" {
-  type = string
+  type        = string
+  description = "Service account email for node pool"
 }
