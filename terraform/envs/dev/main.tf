@@ -1,6 +1,6 @@
 module "iam" {
   source     = "../../modules/iam"
-  project_id = "project-e065e07a-eadd-490c-a26"
+  project = var.project_id
 }
 
 module "gke" {
