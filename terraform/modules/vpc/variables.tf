@@ -1,3 +1,4 @@
 variable "region" {
-  type = string
+  type        = string
+  description = "GCP region for VPC"
 }
