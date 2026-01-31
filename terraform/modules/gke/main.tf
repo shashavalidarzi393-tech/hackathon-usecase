@@ -1,9 +1,28 @@
+variable "project_id" {
+  type = string
+}
+
+variable "region" {
+  type = string
+}
+
+variable "service_account_email" {
+  type = string
+}
+
+variable "network" {
+  type = string
+}
+
 resource "google_container_cluster" "gke" {
   name     = "hackathon-gke"
-  location = "us-central1"
+  location = var.region
 
   remove_default_node_pool = true
   initial_node_count       = 1
+
+  network    = var.network
+  subnetwork = "default"
 
   deletion_protection = false
 }
@@ -11,7 +30,7 @@ resource "google_container_cluster" "gke" {
 resource "google_container_node_pool" "primary" {
   name     = "primary"
   cluster  = google_container_cluster.gke.name
-  location = "us-central1"
+  location = var.region
 
   node_count = 2
 
